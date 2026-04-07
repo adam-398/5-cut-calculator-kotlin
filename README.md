@@ -1,11 +1,17 @@
-## 5 Cut Method Calculator
+## Simple woodworking helper
 
+## Functions
+5 Cut Method Calculator
 Simple calculator for squaring a cross-cut sled on a table saw using the 5 cut method.
 
-## Formula
-Adjustment = ((A - B) / 4) × (Pivot Distance / Cut Length)
+inches to mm converter
 
+## Formulas
+5 cut method adjustment = ((A - B) / 4) × (Pivot Distance / Cut Length)
 Where A and B are the far and near side measurements of the 5th offcut strip.
+
+inches to mm converter = A * 25.4
+Where A is inches
 
 ## Built With
 - Kotlin
