@@ -1,57 +1,61 @@
 package com.example.a5cutmethod.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+import dev.auroralaboratories.fivecut.ui.theme.Burnt
+import dev.auroralaboratories.fivecut.ui.theme.Charcoal
+import dev.auroralaboratories.fivecut.ui.theme.Graphite
+import dev.auroralaboratories.fivecut.ui.theme.Linen
+import dev.auroralaboratories.fivecut.ui.theme.OakGlow
+import dev.auroralaboratories.fivecut.ui.theme.OakLight
+import dev.auroralaboratories.fivecut.ui.theme.Pencil
+import dev.auroralaboratories.fivecut.ui.theme.Plywood
+import dev.auroralaboratories.fivecut.ui.theme.Sawdust
+import dev.auroralaboratories.fivecut.ui.theme.Shavings
+import dev.auroralaboratories.fivecut.ui.theme.Soot
+import dev.auroralaboratories.fivecut.ui.theme.Walnut
+import dev.auroralaboratories.fivecut.ui.theme.WalnutDeep
+import dev.auroralaboratories.fivecut.ui.theme.WalnutMid
+import dev.auroralaboratories.fivecut.ui.theme.WalnutShadow
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Walnut,
+    onPrimary = Sawdust,
+    primaryContainer = OakLight,
+    onPrimaryContainer = WalnutDeep,
+    background = Sawdust,
+    onBackground = Charcoal,
+    surface = Sawdust,
+    onSurface = Charcoal,
+    surfaceContainerHighest = Plywood,
+    onSurfaceVariant = Graphite,
+    outline = Pencil
+)
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkColorScheme = darkColorScheme(
+    primary = OakGlow,
+    onPrimary = WalnutShadow,
+    primaryContainer = WalnutMid,
+    onPrimaryContainer = OakLight,
+    background = Soot,
+    onBackground = Shavings,
+    surface = Soot,
+    onSurface = Shavings,
+    surfaceContainerHighest = Burnt,
+    onSurfaceVariant = Linen,
+    outline = Pencil
 )
 
 @Composable
-fun _5CutMethodTheme(
+fun FiveCutTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
         typography = Typography,
         content = content
     )
