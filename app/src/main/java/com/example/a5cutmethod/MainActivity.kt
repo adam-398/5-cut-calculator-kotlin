@@ -93,8 +93,8 @@ fun FiveCutCard() {
             )
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                MeasurementField("Near side", nearSide, { nearSide = it }, Modifier.weight(1f))
-                MeasurementField("Far side", farSide, { farSide = it }, Modifier.weight(1f))
+                MeasurementField("Near side width", nearSide, { nearSide = it }, Modifier.weight(1f))
+                MeasurementField("Far side width", farSide, { farSide = it }, Modifier.weight(1f))
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 MeasurementField("Strip length", stripLength, { stripLength = it }, Modifier.weight(1f))
