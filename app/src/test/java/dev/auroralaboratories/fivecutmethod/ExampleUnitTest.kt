@@ -1,4 +1,4 @@
-package com.example.a5cutmethod
+package dev.auroralaboratories.fivecutmethod
 
 import org.junit.Test
 
