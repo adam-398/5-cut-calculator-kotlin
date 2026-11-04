@@ -5,17 +5,23 @@ import kotlin.math.abs
 internal val fiveCutSteps = listOf(
     "Take a square-ish panel and number its sides 1 to 4.",
     "Cut side 1. Turn the panel a quarter turn so the edge you just cut is against the fence, and cut side 2. Repeat for sides 3 and 4.",
-    "Cut side 1 again, taking off a strip about 20 mm wide.",
+    "Cut side 1 again, taking off a strip approximately 20 mm wide.",
     "Measure the strip's width at the end that was nearest you and at the far end, then enter everything below."
 )
 
-fun cutResult(near: Float?, far: Float?, strip: Float?, fence: Float?): CutResult {
+enum class PivotSide { Left, Right }
+
+private const val SQUARE_TOLERANCE_MM = 0.05f
+
+fun cutResult(
+    near: Float?, far: Float?, strip: Float?, fence: Float?, pivot: PivotSide
+): CutResult {
     val adjustment = calculateCut(near, far, strip, fence) ?: return CutResult.Incomplete
-    if (abs(adjustment) < 0.005f) return CutResult.Square
+    if (abs(adjustment) < SQUARE_TOLERANCE_MM) return CutResult.Square
     return CutResult.Adjust(
         amount = abs(adjustment),
-        forwards = adjustment > 0,
-        difference = abs((far ?: 0f) - (near ?: 0f))
+        forwards = (adjustment > 0) == (pivot == PivotSide.Left),
+        difference = abs(far!! - near!!)
     )
 }
 

@@ -28,7 +28,9 @@ private val LightColors = lightColorScheme(
     surfaceContainerHigh = MistDeep,
     surfaceContainerHighest = MistDeeper,
     outline = Pebble,
-    outlineVariant = Line
+    outlineVariant = Line,
+            secondaryContainer = Navy,
+    onSecondaryContainer = Card,
 )
 
 private val DarkColors = darkColorScheme(
@@ -50,7 +52,9 @@ private val DarkColors = darkColorScheme(
     surfaceContainerHigh = NightHigh,
     surfaceContainerHighest = NightHigher,
     outline = NightPebble,
-    outlineVariant = NightLine
+    outlineVariant = NightLine,
+    secondaryContainer = Chalk,
+    onSecondaryContainer = NavyInk,
 )
 
 private val AppShapes = Shapes(

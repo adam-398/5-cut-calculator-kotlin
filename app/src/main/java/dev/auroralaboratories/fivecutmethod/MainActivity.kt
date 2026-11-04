@@ -1,5 +1,6 @@
 package dev.auroralaboratories.fivecutmethod
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,14 +48,20 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.auroralaboratories.fivecutmethod.ui.theme.FiveCutTheme
@@ -179,20 +186,32 @@ sealed interface CutResult {
     data object Square : CutResult
     data class Adjust(val amount: Float, val forwards: Boolean, val difference: Float) : CutResult
 }
+@Composable
+fun rememberPivotRight(): MutableState<Boolean> {
+    val prefs = LocalContext.current.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val state = remember { mutableStateOf(prefs.getBoolean("pivot_right", true)) }
+    LaunchedEffect(state.value) {
+        prefs.edit().putBoolean("pivot_right", state.value).apply()
+    }
+    return state
+}
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun FiveCutCard() {
     var nearSide by rememberSaveable { mutableStateOf("") }
     var farSide by rememberSaveable { mutableStateOf("") }
     var stripLength by rememberSaveable { mutableStateOf("") }
     var fenceLength by rememberSaveable { mutableStateOf("") }
     var showSteps by rememberSaveable { mutableStateOf(false) }
+    var pivotRight by rememberPivotRight()
 
     val result = cutResult(
         nearSide.toNumberOrNull(),
         farSide.toNumberOrNull(),
         stripLength.toNumberOrNull(),
-        fenceLength.toNumberOrNull()
+        fenceLength.toNumberOrNull(),
+        if (pivotRight) PivotSide.Right else PivotSide.Left
     )
     val hasInput = listOf(nearSide, farSide, stripLength, fenceLength).any { it.isNotBlank() }
 
@@ -237,12 +256,33 @@ fun FiveCutCard() {
         FieldGroup("Length") {
             MeasurementField("Strip", stripLength, { stripLength = it }, Modifier.weight(1f))
             MeasurementField(
-                "Fence",
+                "Pivot to adjuster",
                 fenceLength,
                 { fenceLength = it },
                 Modifier.weight(1f),
                 imeAction = ImeAction.Done
             )
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                "PIVOT POSITION",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                letterSpacing = 1.sp
+            )
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                SegmentedButton(
+                    selected = !pivotRight,
+                    onClick = { pivotRight = false },
+                    shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
+                ) { Text("Left of blade") }
+                SegmentedButton(
+                    selected = pivotRight,
+                    onClick = { pivotRight = true },
+                    shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2)
+                ) { Text("Right of blade") }
+            }
         }
 
         ResultPanel(result)
@@ -351,9 +391,6 @@ fun ResultPanel(result: CutResult) {
 }
 
 
-
-
-// ---------- Converter ----------
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -484,5 +521,13 @@ fun toFractionalInches(inches: Float): String {
         numerator == 0 -> "$whole\""
         whole == 0 -> "$numerator/$denominator\""
         else -> "$whole $numerator/$denominator\""
+    }
+}
+
+@Preview
+@Composable
+fun FiveCutCardPreview() {
+    FiveCutTheme {
+        FiveCutCard()
     }
 }
