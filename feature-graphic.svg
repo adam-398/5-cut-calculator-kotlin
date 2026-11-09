@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
-  <rect width="1024" height="500" fill="#1D3448"/>
-  <g transform="translate(110 100) scale(5.6) translate(-27 -27)">
-    <path d="M27,27 L71,27 L66.5,81 L27,81 Z" fill="#F2EDE4"/>
-    <path d="M75,27 L81,27 L81,81 L70.5,81 Z" fill="#C8A27A"/>
-  </g>
-  <text x="470" y="235" font-family="Inter, DejaVu Sans, sans-serif" font-size="68" font-weight="700" fill="#F2EDE4">5-Cut Method</text>
-  <text x="470" y="300" font-family="Inter, DejaVu Sans, sans-serif" font-size="32" fill="#C8A27A">Square your crosscut sled</text>
-</svg>
