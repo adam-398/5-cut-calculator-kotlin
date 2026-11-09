@@ -1,10 +1,5 @@
 package dev.auroralaboratories.fivecutmethod
 
-import android.content.Context
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -57,28 +52,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.auroralaboratories.fivecutmethod.ui.theme.FiveCutTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FiveCutTheme {
-                WoodworkingHelperScreen()
-            }
-        }
-    }
-}
 
 /**
  * The main screen of the app.
@@ -115,6 +96,10 @@ fun WoodworkingHelperScreen() {
     }
 }
 
+/**
+ * A card with a section header.
+ * @param content The content of the card.
+ */
 @Composable
 fun SectionCard(content: @Composable ColumnScope.() -> Unit) {
     Surface(
@@ -131,6 +116,11 @@ fun SectionCard(content: @Composable ColumnScope.() -> Unit) {
     }
 }
 
+/**
+ * A card header with an optional action button.
+ * @param title The title of the card.
+ * @param action The optional action button.
+ */
 @Composable
 fun CardHeader(title: String, action: @Composable () -> Unit = {}) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -139,6 +129,11 @@ fun CardHeader(title: String, action: @Composable () -> Unit = {}) {
     }
 }
 
+/**
+ * A group of fields with a label.
+ * @param label The label to display above the fields.
+ * @param content The content of the group.
+ */
 @Composable
 fun FieldGroup(label: String, content: @Composable RowScope.() -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -152,6 +147,17 @@ fun FieldGroup(label: String, content: @Composable RowScope.() -> Unit) {
     }
 }
 
+/**
+ * A text field for entering a measurement.
+ * @param label The label for the field.
+ * @param value The current value of the field.
+ * @param onValueChange The callback to invoke when the value changes.
+ * @param modifier The modifier to apply to the field.
+ * @param suffix The suffix to display after the value.
+ * @param hint The hint to display when the field is empty.
+ * @param keyboardType The type of keyboard to use.
+ * @param imeAction The action to perform when the user presses the IME action.
+ */
 @Composable
 fun MeasurementField(
     label: String,
@@ -186,16 +192,11 @@ sealed interface CutResult {
     data object Square : CutResult
     data class Adjust(val amount: Float, val forwards: Boolean, val difference: Float) : CutResult
 }
-@Composable
-fun rememberPivotRight(): MutableState<Boolean> {
-    val prefs = LocalContext.current.getSharedPreferences("settings", Context.MODE_PRIVATE)
-    val state = remember { mutableStateOf(prefs.getBoolean("pivot_right", true)) }
-    LaunchedEffect(state.value) {
-        prefs.edit().putBoolean("pivot_right", state.value).apply()
-    }
-    return state
-}
 
+
+/**
+ * The five-cut method calculator.
+ */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun FiveCutCard() {
@@ -289,6 +290,11 @@ fun FiveCutCard() {
     }
 }
 
+/**
+ * Displays a step in the five-cut method.
+ * @param number The step number.
+ * @param text The step text.
+ */
 @Composable
 fun StepRow(number: Int, text: String) {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -313,6 +319,10 @@ fun StepRow(number: Int, text: String) {
     }
 }
 
+/**
+ * Displays the result of the five-cut method.
+ * @param result The result to display.
+ */
 @Composable
 fun ResultPanel(result: CutResult) {
     val colors = MaterialTheme.colorScheme
@@ -364,7 +374,7 @@ fun ResultPanel(result: CutResult) {
                     Text("Move the fence", style = MaterialTheme.typography.labelLarge)
                     Row {
                         Text(
-                            "%.2f".format(state.amount),
+                            formatDecimal(state.amount, 2),
                             style = MaterialTheme.typography.displayMedium.copy(
                                 fontFeatureSettings = "tnum"
                             ),
@@ -381,7 +391,7 @@ fun ResultPanel(result: CutResult) {
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        "Strip difference %.2f mm".format(state.difference),
+                        "Strip difference ${formatDecimal(state.difference, 2)} mm",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -391,7 +401,9 @@ fun ResultPanel(result: CutResult) {
 }
 
 
-
+/**
+ * The main screen of the app.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConverterCard() {
@@ -402,11 +414,11 @@ fun ConverterCard() {
     val secondary: String?
     if (inchesToMm) {
         val inches = parseInches(input)
-        primary = inches?.let { "%.1f mm".format(it * 25.4f) }
-        secondary = inches?.let { "%.3f in".format(it) }
+        primary = inches?.let { "${formatDecimal(it * 25.4f, 1)} mm"}
+        secondary = inches?.let { "${formatDecimal(it, 3)} in" }
     } else {
         val inches = input.toNumberOrNull()?.div(25.4f)
-        primary = inches?.let { "%.3f in".format(it) }
+        primary = inches?.let { "${formatDecimal(it, 3)} in" }
         secondary = inches?.let { "≈ ${toFractionalInches(it)} to the nearest 1/32\"" }
     }
 
@@ -480,6 +492,10 @@ fun ConverterCard() {
 }
 
 
+/**
+ * Accepts "1.75", "1,75", "3/4", "1 3/4" and "1-3/4".
+ * @return The number as a decimal or null if the input is invalid.
+ */
 fun String.toNumberOrNull(): Float? = trim().replace(',', '.').toFloatOrNull()
 
 /** Accepts "1.75", "1,75", "3/4", "1 3/4" and "1-3/4". */
@@ -500,6 +516,11 @@ fun parseInches(input: String): Float? {
     }
 }
 
+
+/**
+ * Accepts "1/2" and "3/4".
+ * @return The fraction as a decimal or null if the input is invalid.
+ */
 fun parseFraction(text: String): Float? {
     val parts = text.split('/')
     if (parts.size != 2) return null
@@ -508,6 +529,11 @@ fun parseFraction(text: String): Float? {
     return numerator / denominator
 }
 
+/**
+ * Converts inches to a string of fractional inches.
+ * @param inches The number of inches to convert.
+ * @return The string representation of the fractional inches.
+ */
 fun toFractionalInches(inches: Float): String {
     val thirtySeconds = (inches * 32).roundToInt()
     val whole = thirtySeconds / 32
@@ -524,10 +550,3 @@ fun toFractionalInches(inches: Float): String {
     }
 }
 
-@Preview
-@Composable
-fun FiveCutCardPreview() {
-    FiveCutTheme {
-        FiveCutCard()
-    }
-}
