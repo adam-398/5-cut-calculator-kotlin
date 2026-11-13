@@ -13,6 +13,14 @@ enum class PivotSide { Left, Right }
 
 private const val SQUARE_TOLERANCE_MM = 0.05f
 
+/**
+ * Calculates the adjustment required to square a cross-cut sled on a table saw using the 5 cut method.
+ * @param near The length of the side nearest you.
+ * @param far The length of the side furthest away.
+ * @param strip The length of the strip.
+ * @param fence The length of the pivot to adjuster distance.
+ * @param pivot The side of the sled where the pivot is.
+ */
 fun cutResult(
     near: Float?, far: Float?, strip: Float?, fence: Float?, pivot: PivotSide
 ): CutResult {
@@ -25,6 +33,13 @@ fun cutResult(
     )
 }
 
+/**
+ * Calculates the adjustment required to square a cross-cut sled on a table saw using the 5 cut method.
+ * @param nearSide The length of the side nearest you.
+ * @param farSide The length of the side furthest away.
+ * @param stripLength The length of the strip.
+ * @param fenceLength The length of the pivot to adjuster distance.
+ */
 fun calculateCut(
     nearSide: Float?,
     farSide: Float?,
