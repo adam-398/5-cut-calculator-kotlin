@@ -2,6 +2,7 @@ package dev.auroralaboratories.fivecutmethod
 
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -50,6 +51,13 @@ class CalculateCutTest {
     fun returnsValidValueForStripLengthGreaterThanZero() {
         val result = calculateCut(1f, 1f, 1f, 1f)
         assertNotNull(result)
+    }
+
+    @Test
+    fun returnsCorrectValueForKnownValidInputs() {
+        val result = calculateCut(30f, 33f, 300f, 700f)
+        val value = assertNotNull(result)
+        assertEquals(1.75f, result, 0.01f)
     }
 
 
