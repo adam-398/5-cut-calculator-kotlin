@@ -54,11 +54,16 @@ class CalculateCutTest {
     }
 
     @Test
-    fun returnsCorrectValueForKnownValidInputs() {
+    fun returnsCorrectPositiveValueForKnownValidInputs() {
         val result = calculateCut(30f, 33f, 300f, 700f)
         val value = assertNotNull(result)
-        assertEquals(1.75f, result, 0.01f)
+        assertEquals(1.75f, value, 0.01f)
     }
 
-
+    @Test
+    fun returnsCorrectNegativeValueForKnownValidInputs() {
+        val result = calculateCut(33F, 30F, 300f, 700f)
+        val value = assertNotNull(result)
+        assertEquals(-1.75f, value, 0.01f)
+    }
 }

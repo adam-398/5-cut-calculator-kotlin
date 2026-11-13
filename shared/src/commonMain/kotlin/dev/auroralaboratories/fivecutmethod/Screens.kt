@@ -186,7 +186,9 @@ fun MeasurementField(
 }
 
 
-
+/**
+ * The result of the five-cut method.
+ */
 sealed interface CutResult {
     data object Incomplete : CutResult
     data object Square : CutResult
